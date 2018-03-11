@@ -9,11 +9,13 @@
 import UIKit
 import MapKit
 
-class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, LocationsViewControllerDelegate, MKMapViewDelegate {
    // var mapView: MKMapView!
+    var vc: UIImagePickerController!
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var cameraButton: UIButton!
+    //var imageTaken = UIImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,17 +23,21 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
                                               MKCoordinateSpanMake(0.1, 0.1))
         mapView.setRegion(sfRegion, animated: false)
-
-       
-    }
-
-    
-    @IBAction func onCameraTap(_ sender: AnyObject) {
-        let vc = UIImagePickerController()
+        
+        vc = UIImagePickerController()
         vc.delegate = self
         vc.allowsEditing = true
         vc.sourceType = UIImagePickerControllerSourceType.photoLibrary
+
+    }
+
+    func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
+        self.navigationController?.popToViewController(self, animated: true)
         
+        
+    }
+    
+    @IBAction func onCameraTap(_ sender: AnyObject) {
         self.present(vc, animated: true, completion: nil)
     }
     
