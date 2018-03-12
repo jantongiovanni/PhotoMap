@@ -28,12 +28,19 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         vc.delegate = self
         vc.allowsEditing = true
         vc.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        
+        mapView.delegate = self
 
     }
 
     func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
         self.navigationController?.popToViewController(self, animated: true)
-        
+        let locationCoordinate = CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)
+
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = locationCoordinate
+        annotation.title = "\(latitude), \(longitude)"
+        mapView.addAnnotation(annotation)
         
     }
     
@@ -51,9 +58,27 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         // Do something with the images (based on your use case)
         
         // Dismiss UIImagePickerController to go back to your original view controller
-        dismiss(animated: true, completion: nil)
-        performSegue(withIdentifier: "tagSegue", sender: self)
+        dismiss(animated: true, completion: {
+            self.performSegue(withIdentifier: "tagSegue", sender: nil)
+        })
     }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let reuseID = "myAnnotationView"
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
+        if (annotationView == nil) {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+            annotationView!.canShowCallout = true
+            annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x:0, y:0, width: 50, height:50))
+        }
+        
+        let imageView = annotationView?.leftCalloutAccessoryView as! UIImageView
+        imageView.image = UIImage(named: "camera")
+        
+        return annotationView
+    }
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
