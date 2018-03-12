@@ -8,6 +8,17 @@
 
 import UIKit
 import MapKit
+import QuartzCore
+
+class PhotoAnnotation: NSObject, MKAnnotation {
+    var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(0, 0)
+    var photo: UIImage!
+    
+    var title: String? {
+        return "\(coordinate.latitude)"
+    }
+    
+}
 
 class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, LocationsViewControllerDelegate, MKMapViewDelegate {
    // var mapView: MKMapView!
@@ -15,10 +26,21 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var cameraButton: UIButton!
+    
+    
+    
+    
     //var imageTaken = UIImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+      
+       cameraButton.layer.cornerRadius = 0.5 * cameraButton.bounds.size.width
+       //cameraButton.imageView?.contentMode = UIViewContentMode.scaleToFill
+        cameraButton.contentHorizontalAlignment = .fill
+        cameraButton.contentVerticalAlignment = .fill
+        cameraButton.imageView?.contentMode = .scaleAspectFill
         //one degree of latitude is approximately 111 kilometers (69 miles) at all times.
         let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
                                               MKCoordinateSpanMake(0.1, 0.1))
